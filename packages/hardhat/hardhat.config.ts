@@ -46,6 +46,14 @@ const config: HardhatUserConfig = {
         enabled: process.env.MAINNET_FORKING_ENABLED === "true",
       },
     },
+    localhost: {
+      url: `http://localhost:8545`,
+      accounts: [deployerPrivateKey],
+    },
+    holeskey: {
+      url: `https://ethereum-holesky.publicnode.com`,
+      accounts: [deployerPrivateKey],
+    },
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
