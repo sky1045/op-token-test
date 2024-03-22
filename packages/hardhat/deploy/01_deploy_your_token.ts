@@ -35,24 +35,39 @@ const deployYourToken: DeployFunction = async function (hre: HardhatRuntimeEnvir
 
   // Get the deployed contract to interact with it after deploying.
   const yourToken = await hre.ethers.getContract<Contract>("YourToken", deployer);
-  const address = yourToken.getAddress();
+  const yourTokenAddress = await yourToken.getAddress();
+  console.log("yourToken address: " + yourTokenAddress);
 
-  while (true) {
-    try {
-      await Promise.race([
-        hre.run("verify:verify", {
-          address,
-          contract: Object.entries(JSON.parse((await hre.deployments.get('YourToken'))['metadata']!)['settings']['compilationTarget'])[0].join(':'),
-        }),
-        new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 10000))
-      ])
-      break;
-    } catch(e) {
-      if (e instanceof NomicLabsHardhatPluginError && e.message.includes("Message: Unknown UID")) break;
-      if (e instanceof Error && e.message == "timeout") continue;
-      throw e;
-    }
-  }
+  await deploy("Vendor", {
+    from: deployer,
+    // Contract constructor arguments
+    args: [yourTokenAddress],
+    log: true,
+    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
+    // automatically mining the contract deployment transaction. There is no effect on live networks.
+    autoMine: true,
+  });
+
+  const vendor = await hre.ethers.getContract<Contract>("Vendor", deployer);
+  const vendorAddress = vendor.getAddress();
+  console.log("vendor address: " + vendorAddress);
+
+  // while (true) {
+  //   try {
+  //     await Promise.race([
+  //       hre.run("verify:verify", {
+  //         address,
+  //         contract: Object.entries(JSON.parse((await hre.deployments.get('YourToken'))['metadata']!)['settings']['compilationTarget'])[0].join(':'),
+  //       }),
+  //       new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 10000))
+  //     ])
+  //     break;
+  //   } catch(e) {
+  //     if (e instanceof NomicLabsHardhatPluginError && e.message.includes("Message: Unknown UID")) break;
+  //     if (e instanceof Error && e.message == "timeout") continue;
+  //     throw e;
+  //   }
+  // }
 };
 
 export default deployYourToken;

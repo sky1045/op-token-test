@@ -28,7 +28,7 @@ const BlockExplorer: NextPage = () => {
       );
     }
 
-    if (targetNetwork.id !== hardhat.id) {
+    if (targetNetwork.id !== 17000133713) {
       notification.error(
         <>
           <p className="font-bold mt-0 mb-1">

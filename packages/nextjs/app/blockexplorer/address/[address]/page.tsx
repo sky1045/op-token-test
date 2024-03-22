@@ -37,7 +37,7 @@ async function fetchByteCodeAndAssembly(buildInfoDirectory: string, contractPath
 
 const getContractData = async (address: string) => {
   const contracts = deployedContracts as GenericContractsDeclaration | null;
-  const chainId = hardhat.id;
+  const chainId = 17000133713;
   let contractPath = "";
 
   const buildInfoDirectory = path.join(
@@ -59,11 +59,16 @@ const getContractData = async (address: string) => {
   }
 
   const deployedContractsOnChain = contracts ? contracts[chainId] : {};
-  for (const [contractName, contractInfo] of Object.entries(deployedContractsOnChain)) {
-    if (contractInfo.address.toLowerCase() === address.toLowerCase()) {
-      contractPath = `contracts/${contractName}.sol`;
-      break;
+  try {
+
+    for (const [contractName, contractInfo] of Object.entries(deployedContractsOnChain)) {
+      if (contractInfo.address.toLowerCase() === address.toLowerCase()) {
+        contractPath = `contracts/${contractName}.sol`;
+        break;
+      }
     }
+  } catch(e)  {
+    console.log(e)
   }
 
   if (!contractPath) {
